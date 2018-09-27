@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title> A giph for every occasion</title>
+  <style type="text/css">
+    button,
+    div,
+    form,
+    input {
+      margin: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>GIPHS FOR EVERY OCCASION!</h1>
+
+    <div id="buttons-view"></div>
+
+    <form id="gif-form">
+      <label for="gif-input">Add a box for your giph!</label>
+      <input type="text" id="gif-input"><br>
+      <input id="add-gif" type="submit" value="Add a box">
+    </form>
+    <div id="gifs-view"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    
+      var gifs = ["anniversary", "graduation", "Baby", "retirement"];
+
+      function displaygifInfo() {
+
+        var gif = $(this).attr("data-name");
+        var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + gif + "&apikey=mcvzQB36uHOx4iDSAQggQN6oramDcaJq";
+        $.ajax({
+          url: queryURL,
+          method: "GET"
+        }).then(function(response) {
+            console.log(response.data[0].images.fixed_height.url)
+        
+var gifDiv = $("<div class='gif'>")
+
+imgURL = $("<img>").attr("src", response.data[0].images.fixed_height.url)
+
+gifDiv.append(imgURL)
+
+$('#gifs-view').prepend(gifDiv)
+     });
+
+      }
+      function renderButtons() {
+
+        $("#buttons-view").empty();
+        
+        for (var i = 0; i < gifs.length; i++) {
+
+          var a = $("<button>");
+          a.addClass("gif");
+          a.attr("data-name", gifs[i]);
+          a.text(gifs[i]);
+          $("#buttons-view").append(a);
+        }
+      }
+
+      $("#add-gif").on("click", function(event) {
+        event.preventDefault();
+        var gif = $("#gif-input").val().trim();
+
+        gifs.push(gif);
+
+        renderButtons();
+      });
+      $(document).on("click", ".gif", displaygifInfo);
+      renderButtons();
+    </script>
+  </div>
+</body>
+
+</html>
